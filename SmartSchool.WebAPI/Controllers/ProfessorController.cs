@@ -10,23 +10,24 @@ namespace SmartSchool.WebAPI.Controllers
     [ApiController]
     public class ProfessorController : ControllerBase
     {
-        private readonly SmartContext _context;
+        private readonly IRepository _repo;
 
-        public ProfessorController(SmartContext context)
+        public ProfessorController(IRepository repo)
         {
-            _context = context;
+           _repo = repo;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_context.Professores);
+            var result = _repo.GetAllProfessores(true);
+            return new JsonResult(result);
         }
 
         [HttpGet("byid/{id}")]
         public IActionResult Get(int id)
         {
-            var professor = _context.Professores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var professor = _repo.GetAllProfessorById(id);
             if (professor == null) return BadRequest("Professor não encontrado");
             return Ok(professor);
 
@@ -35,34 +36,43 @@ namespace SmartSchool.WebAPI.Controllers
         [HttpPost]
         public IActionResult PostProfessor(Professor professor)
         {
-            _context.Add(professor);
-            _context.SaveChanges();
+            _repo.Add(professor);
+            if(_repo.SaveChanges())
+            {
+                return Ok(professor);
+            };
 
-            return Ok(professor);
+            return BadRequest("Professor não cadastrado");
         }
 
         [HttpPut("UpdateProfessor/{id}")]
         public IActionResult PutProfessor(int id, Professor professor)
         {
-            var prof = _context.Professores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var prof = _repo.GetAllProfessorById(id);
             if (prof == null) return BadRequest("Não foi possivel alterar o professor");
 
-            _context.Update(professor);
-            _context.SaveChanges();
+            _repo.Update(professor);
+            if (_repo.SaveChanges())
+            {
+                return Ok(professor);
+            };
 
-            return Ok(professor);
+            return BadRequest("Professor não atualizado");
         }
 
         [HttpDelete("DeleteProfessor/{id}")]
         public IActionResult DeleteProfessor(int id)
         {
-            var professor = _context.Professores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var professor = _repo.GetAllProfessorById(id);
             if (professor == null) return BadRequest("Não Encontrado");
 
-            _context.Remove(professor);
-            _context.SaveChanges();
+            _repo.Delete(professor);
+            if (_repo.SaveChanges())
+            {
+                return Ok("Professor " + professor.Name + " Deletado com Sucesso!");
+            };
 
-            return Ok("Professor " + professor.Name + " Deletado com Sucesso!");
+            return BadRequest("Professor não Deletado");
         }
     }
 }
