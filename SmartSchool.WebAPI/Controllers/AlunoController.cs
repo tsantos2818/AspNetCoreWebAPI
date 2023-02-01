@@ -25,7 +25,7 @@ namespace SmartSchool.WebAPI.Controllers
         }
 
         // GET api/<AlunoController>/5
-        [HttpGet("{id}")]
+        [HttpGet("alunoId/{id}")]
         public IActionResult GetById(int id)
         {
             var aluno = _repo.GetAllAlunoById(id,false);

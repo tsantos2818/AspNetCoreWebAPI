@@ -24,7 +24,7 @@ namespace SmartSchool.WebAPI.Controllers
             return new JsonResult(result);
         }
 
-        [HttpGet("byid/{id}")]
+        [HttpGet("professorId/{id}")]
         public IActionResult Get(int id)
         {
             var professor = _repo.GetAllProfessorById(id);
