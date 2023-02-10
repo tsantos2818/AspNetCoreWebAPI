@@ -7,8 +7,9 @@ using SmartSchool.WebAPI.Models;
 
 namespace SmartSchool.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class AlunoController : ControllerBase
     {
         private readonly IRepository _repo;
@@ -22,6 +23,10 @@ namespace SmartSchool.WebAPI.Controllers
         }
 
         // GET: api/<AlunoController>
+        /// <summary>
+        /// Metodo Responsavel para retornar Alunos
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get()
         {
